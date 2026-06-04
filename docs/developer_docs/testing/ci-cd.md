@@ -65,6 +65,44 @@ Key workflows:
 - `codeql.yml` - Security analysis
 - `release.yml` - Release automation
 
+## CI Environment Drift Memory
+
+Known patterns where tests pass locally but fail in CI.
+
+### Pattern: Conditional import creates environment-dependent constructor signatures
+
+**Symptoms:**
+- Test passes locally but fails in CI
+- Error indicates missing required argument or unexpected class behavior
+- A `try/except ImportError` block assigns a fallback class
+
+**Root cause:** Fallback class (e.g., `Exception`) has a different constructor signature than the real class (e.g., `playwright.sync_api.TimeoutError`). Locally the fallback is used; in CI the real class is imported.
+
+**Preferred fixes:**
+- Always use the most restrictive calling convention (provide all required args for the real class)
+- Mock imports explicitly rather than relying on package absence
+- Add explicit test setup that does not depend on environment state
+
+**Example (Issue #7):**
+```python
+# BAD: Works only when PlaywrightTimeout = Exception
+timeout = PlaywrightTimeout()
+
+# GOOD: Works in all environments
+timeout = PlaywrightTimeout("timeout exceeded")
+```
+
+### Pattern: Local pass, CI fail due to leaked test state
+
+**Symptoms:**
+- Test passes alone but fails when run with other tests
+- Error suggests missing config or polluted shared state
+
+**Preferred fixes:**
+- Make test setup explicit
+- Reset mutated state in teardown
+- Use monkeypatch/fixture scoping
+
 ---
 
 *This documentation is under active development. Check back soon for updates!*
