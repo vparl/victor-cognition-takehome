@@ -23,6 +23,7 @@ Reproduces a real CI reliability issue:
 
 Root cause: conditional import creates different behavior across environments.
 """
+
 try:
     from playwright.sync_api import TimeoutError as PlaywrightTimeout
 except ImportError:
