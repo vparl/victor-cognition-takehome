@@ -14,8 +14,12 @@ jobs:
         with:
           python-version: "3.11"
       - name: Install dependencies
-        run: pip install pytest playwright
+        run: |
+          pip install -r requirements/base.txt
+          pip install -e . --no-deps
+          pip install pytest pytest-mock playwright
       - name: Run playwright utility tests
         run: |
           pytest tests/unit_tests/utils/test_screenshot_utils.py \
-                 tests/unit_tests/utils/webdriver_test.py -v
+                 tests/unit_tests/utils/webdriver_test.py \
+                 -o "confcutdir=tests/unit_tests" -v

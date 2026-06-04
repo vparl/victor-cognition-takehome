@@ -521,7 +521,7 @@ class TestWebDriverPlaywrightFallback:
         mock_playwright_instance.chromium.launch.return_value = mock_browser
         mock_browser.new_context.return_value = mock_context
         mock_context.new_page.return_value = mock_page
-        mock_page.goto.side_effect = PlaywrightTimeout()
+        mock_page.goto.side_effect = PlaywrightTimeout("navigation timed out")
 
         with patch("superset.utils.webdriver.app") as mock_app:
             mock_app.config = {
@@ -571,7 +571,6 @@ class TestWebDriverConstantsWithImportError:
     @patch("superset.utils.webdriver.sync_playwright", None)
     def test_dummy_classes_when_playwright_unavailable(self):
         """Test that dummy classes are defined when Playwright unavailable."""
-        # Force reimport to test ImportError path
         from importlib import reload
 
         import superset.utils.webdriver as webdriver_module
@@ -580,10 +579,14 @@ class TestWebDriverConstantsWithImportError:
         with patch.dict("sys.modules", {"playwright.sync_api": None}):
             reload(webdriver_module)
 
-        # Should have dummy classes defined
-        assert hasattr(webdriver_module, "BrowserContext")
-        assert hasattr(webdriver_module, "PlaywrightError")
-        assert hasattr(webdriver_module, "PlaywrightTimeout")
+        try:
+            # Should have dummy classes defined
+            assert hasattr(webdriver_module, "BrowserContext")
+            assert hasattr(webdriver_module, "PlaywrightError")
+            assert hasattr(webdriver_module, "PlaywrightTimeout")
+        finally:
+            # Restore module to avoid leaking dummy classes into later tests
+            reload(webdriver_module)
 
 
 class TestWebDriverPlaywrightErrorHandling:
@@ -734,7 +737,7 @@ class TestWebDriverPlaywrightErrorHandling:
         mock_context.new_page.return_value = mock_page
         mock_page.locator.return_value = mock_element
 
-        timeout = PlaywrightTimeout()
+        timeout = PlaywrightTimeout("spinner wait timed out")
         mock_page.wait_for_function.side_effect = timeout
 
         with patch.object(WebDriverPlaywright, "auth", return_value=mock_context):
@@ -776,7 +779,7 @@ class TestWebDriverPlaywrightErrorHandling:
         mock_context.new_page.return_value = mock_page
 
         # Keep a reference to the exact instance so we can verify identity below.
-        timeout = PlaywrightTimeout()
+        timeout = PlaywrightTimeout("element wait timed out")
         mock_page.locator.return_value = mock_element
         mock_element.wait_for.side_effect = timeout
 
