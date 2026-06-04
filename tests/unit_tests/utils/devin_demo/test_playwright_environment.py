@@ -15,10 +15,7 @@ except ImportError:
 
 def test_playwright_timeout_handles_timeout_gracefully():
     """Test that PlaywrightTimeout can be instantiated in timeout handling code."""
-    # BUG: Missing required message argument
-    # Works locally (PlaywrightTimeout = Exception, no args needed)
-    # Fails in CI (PlaywrightTimeout = playwright TimeoutError, requires message)
-    timeout = PlaywrightTimeout()
+    timeout = PlaywrightTimeout("timeout exceeded")
     assert timeout is not None
 
 
