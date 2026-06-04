@@ -14,7 +14,9 @@ jobs:
         with:
           python-version: "3.11"
       - name: Install dependencies
-        run: pip install pytest playwright
+        run: |
+          pip install pytest playwright flask
+          pip install -r requirements/testing.txt --quiet 2>/dev/null || true
       - name: Run playwright utility tests
         run: |
           pytest tests/unit_tests/utils/test_screenshot_utils.py \
