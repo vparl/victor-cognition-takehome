@@ -1,0 +1,21 @@
+name: Devin Demo CI
+on:
+  push:
+    branches: [master, main]
+  pull_request:
+    branches: [master, main]
+
+jobs:
+  playwright-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+      - name: Install dependencies
+        run: pip install pytest playwright
+      - name: Run playwright utility tests
+        run: |
+          pytest tests/unit_tests/utils/test_screenshot_utils.py \
+                 tests/unit_tests/utils/webdriver_test.py -v
