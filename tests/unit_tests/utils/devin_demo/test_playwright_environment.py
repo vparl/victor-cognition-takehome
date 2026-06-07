@@ -18,7 +18,7 @@ def test_playwright_timeout_handles_timeout_gracefully():
     # BUG: Missing required message argument
     # Works locally (PlaywrightTimeout = Exception, no args needed)
     # Fails in CI (PlaywrightTimeout = playwright TimeoutError, requires message)
-    timeout = PlaywrightTimeout()
+    timeout = PlaywrightTimeout("timeout exceeded")
     assert timeout is not None
 
 
