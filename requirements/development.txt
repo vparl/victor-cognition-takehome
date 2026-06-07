@@ -378,6 +378,7 @@ greenlet==3.5.0
     #   -c requirements/base-constraint.txt
     #   apache-superset
     #   gevent
+    #   playwright
     #   shillelagh
     #   sqlalchemy
 griffelib==2.0.2
@@ -672,6 +673,8 @@ platformdirs==4.3.8
     #   pylint
     #   requests-cache
     #   virtualenv
+playwright==1.60.0
+    # via apache-superset
 pluggy==1.5.0
     # via pytest
 ply==3.11
@@ -756,6 +759,8 @@ pydata-google-auth==1.9.0
     # via pandas-gbq
 pydruid==0.6.9
     # via apache-superset
+pyee==13.0.1
+    # via playwright
 pyfakefs==5.3.5
     # via apache-superset
 pygeohash==3.2.2
@@ -1047,6 +1052,7 @@ typing-extensions==4.15.0
     #   py-key-value-aio
     #   pydantic
     #   pydantic-core
+    #   pyee
     #   pyopenssl
     #   referencing
     #   selenium
